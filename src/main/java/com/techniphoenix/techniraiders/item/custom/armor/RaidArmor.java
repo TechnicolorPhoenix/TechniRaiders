@@ -28,12 +28,9 @@ public class RaidArmor extends DyeableLevelableArmor {
     public static final float damageReductionPerPiece = 0.06f;
     public static final float damageReductionPerLevel = 0.02f;
 
-    public static final UUID[] ARMOR_MODIFIERS_UUID = new UUID[]{
-            UUID.fromString("845DB3C2-CD78-40FB-8A8C-6BC55D1F6E1B"), // Boots
-            UUID.fromString("D8499B04-0E66-4726-AB29-3731E40BC747"), // Leggings
-            UUID.fromString("9F3D476D-C118-4544-8365-64846904B48E"), // Chestplate
-            UUID.fromString("2AD3B246-ABBC-4958-86D3-E4534AE4202A")  // Helmet
-    };
+    public static final UUID RAID_MODIFIERS_UUID = UUID.fromString("845DB3C2-CD78-40FB-8A8C-6BC55D1F6E1B")
+    public static final UUID OMEN_MODIFIERS_UUID = UUID.fromString("D8499B04-0E66-4726-AB29-3731E40BC747")
+    public static final UUID BASE_MODIFIERS_UUID = UUID.fromString("9F3D476D-C118-4544-8365-64846904B48E")
 
     private final Multimap<Attribute, Double> omenAttributes;
     private final Map<Effect, Integer> omenEffects;
@@ -57,7 +54,6 @@ public class RaidArmor extends DyeableLevelableArmor {
         if (slotIn == this.slot) {
             // Standard attribute map creation (Defense, Toughness)
             ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-            UUID uuid = ARMOR_MODIFIERS_UUID[slotIn.getIndex()]; // Use the correct UUID for the slot
 
             float toughness = this.material.getToughness();
             int defense = this.material.getDefenseForSlot(slotIn);
@@ -103,6 +99,8 @@ public class RaidArmor extends DyeableLevelableArmor {
     public void onArmorTick(ItemStack stack, World world, PlayerEntity player) {
         if (!world.isClientSide) {
 
+            inRaid = RaidHelper.isEntityInRaid(player);
+
             // 1. Get the current status of all RaidArmor pieces worn
             int[] countAndLevel = ArmorHelper.getArmorCountAndTotalLevel(player, RaidArmor.class);
             int pieceCount = countAndLevel[0];
@@ -110,42 +108,41 @@ public class RaidArmor extends DyeableLevelableArmor {
 
             if (pieceCount > 0) {
                 double averageLevel = (double) totalLevel / pieceCount;
-
                 // 2. Apply/Update Attributes
                 applyDynamicAttributes(player, pieceCount, totalLevel, averageLevel, RAID_ARMOR_SET_UUID);
             } else {
-                // No RaidArmor worn, ensure everything is removed
-                removeFullSetAttributes(player);
-                removeFullSetEffects(player);
+                removeSetAttributes(player);
+                removeEffects(player);
             }
 
-            this.inRaid = RaidHelper.isEntityInRaid(player);
             // Full Set (RAID) Bonus: Apply RAID effects and attributes
             if (inRaid) {
-                addConditionalAttributes(player, raidAttributes, ARMOR_MODIFIERS_UUID[this.slot.getIndex()], "raid_armor_bonus");
-                addConditionalEffects(player, raidEffects);
+                addRaidAttributes(player, raidAttributes, ARMOR_MODIFIERS_UUID[this.slot.getIndex()], "raid_armor_bonus");
+                addRaidEffects(player, raidEffects);
             } else {
                 // Partial or No Set: Remove all attributes and effects
-                removeConditionalAttributes(player, raidAttributes, ARMOR_MODIFIERS_UUID[this.slot.getIndex()]);
-                removeConditionalAttributes(player, omenAttributes, ARMOR_MODIFIERS_UUID[this.slot.getIndex()]);
-                removeConditionalEffects(player, raidEffects);
-                removeConditionalEffects(player, omenEffects);
+                removeRaidAttributes(player, raidAttributes, ARMOR_MODIFIERS_UUID[this.slot.getIndex()]);
+                removeRaidEffects(player, raidEffects);
             }
 
             // Check for Raid Omen and apply Omen-related bonuses
             if (player.hasEffect(Effects.BAD_OMEN)) {
-                addConditionalAttributes(player, omenAttributes, ARMOR_MODIFIERS_UUID[this.slot.getIndex()], "raid_omen_bonus");
-                addConditionalEffects(player, omenEffects);
+                addOmenAttributes(player, omenAttributes, ARMOR_MODIFIERS_UUID[this.slot.getIndex()], "raid_omen_bonus");
+                addOmenEffects(player, omenEffects);
             } else {
                 // Remove Omen attributes/effects if Bad Omen is gone
-                removeConditionalAttributes(player, omenAttributes, ARMOR_MODIFIERS_UUID[this.slot.getIndex()]);
-                removeConditionalEffects(player, omenEffects);
+                removeOmenAttributes(player, omenAttributes, ARMOR_MODIFIERS_UUID[this.slot.getIndex()]);
+                removeOmenEffects(player, omenEffects);
             }
         }
     }
+    private void applyRaidAttributes(PlayerEntity player, int pieceCount, int totalLevel, double averageLevel, UUID raidUUID) {
+
+    }
+
     private void applyDynamicAttributes(PlayerEntity player, int pieceCount, int totalLevel, double averageLevel, UUID baseUUID) {
         // Remove existing modifiers first to ensure clean updates
-        removeFullSetAttributes(player);
+        removeAttributes(player);
 
         // Loop up to the number of pieces worn to apply the corresponding attribute
         for (int i = 0; i < pieceCount; i++) {
@@ -200,7 +197,7 @@ public class RaidArmor extends DyeableLevelableArmor {
      * Helper to remove all custom RaidArmor attribute modifiers when the armor is unequipped.
      * This method is now public static for external use (e.g., in event handler or when piece count is 0).
      */
-    public static void removeFullSetAttributes(LivingEntity entity) {
+    public static void removeAttributes(LivingEntity entity) {
         if (entity == null) return;
 
         int i = 0;
@@ -244,7 +241,7 @@ public class RaidArmor extends DyeableLevelableArmor {
         }
     }
 
-    private void removeFullSetEffects(PlayerEntity player) {
+    private void removeEffects(PlayerEntity player) {
         // Clears the effects that are applied by the full set bonus
         // We iterate over both possible lists to ensure all custom effects are cleared
         for (Effect effect : raidEffects) {
