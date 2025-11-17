@@ -1,0 +1,7 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "techniraiders:item/raid_iron_boots",
+    "layer1": "techniraiders:item/raid_iron_boots_overlay"
+  }
+}

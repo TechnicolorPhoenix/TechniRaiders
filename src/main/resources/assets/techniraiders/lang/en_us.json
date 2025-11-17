@@ -1,0 +1,18 @@
+{
+  "item.techniraiders.raid_leather_boots": "Leather Raider Boots",
+  "item.techniraiders.raid_leather_leggings": "Leather Raider Leggings",
+  "item.techniraiders.raid_leather_chestplate": "Leather Raider Chestplate",
+  "item.techniraiders.raid_leather_helmet": "Leather Raider Helmet",
+
+  "item.techniraiders.raid_iron_boots": "Iron Raider Boots",
+  "item.techniraiders.raid_iron_leggings": "Iron Raider Leggings",
+  "item.techniraiders.raid_iron_chestplate": "Iron Raider Chestplate",
+  "item.techniraiders.raid_iron_helmet": "Iron Raider Helmet",
+
+  "item.techniraiders.raid_emerald_boots": "Emerald Raider Boots",
+  "item.techniraiders.raid_emerald_leggings": "Emerald Raider Leggings",
+  "item.techniraiders.raid_emerald_chestplate": "Emerald Raider Chestplate",
+  "item.techniraiders.raid_emerald_helmet": "Emerald Raider Helmet",
+
+  "itemGroup.raidArmorTab": "Raid Armors"
+}
