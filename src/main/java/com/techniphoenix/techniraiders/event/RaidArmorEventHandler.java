@@ -1,5 +1,6 @@
 package com.techniphoenix.techniraiders.event;
 
+import com.techniphoenix.techniraiders.TechniRaiders;
 import com.techniphoenix.techniraiders.helper.ArmorHelper;
 import com.techniphoenix.techniraiders.helper.RaidHelper;
 import com.techniphoenix.techniraiders.item.custom.armor.RaidArmor;
@@ -11,9 +12,12 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.monster.AbstractIllagerEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -21,13 +25,65 @@ import net.minecraftforge.fml.common.Mod;
 
 import java.util.UUID;
 
-
-@Mod.EventBusSubscriber(modid = "TechniRaiders")
+@Mod.EventBusSubscriber(modid = TechniRaiders.MOD_ID)
 public class RaidArmorEventHandler {
     // Removed static final EffectInstance declarations. They will be instantiated safely inside the event method.
 
-// Define a static UUID for the Health Boost Attribute Modifier
+    // Define a static UUID for the Health Boost Attribute Modifier
     private static final UUID HEALTH_BOOST_MODIFIER_UUID = UUID.fromString("08800D61-1279-4A7B-900D-016E2DE45B0A");
+
+    public static final String NBT_TAG_ROOT = "techniraiders";
+    public static final String NBT_TAG_LAST_STATE = "lastRaidArmorState";
+
+    @SubscribeEvent
+    public static void onPlayerTick(TickEvent.PlayerTickEvent event)
+    {
+        PlayerEntity player = event.player;
+
+        if (event.phase == TickEvent.Phase.START || event.player.level.isClientSide) {
+            return;
+        }
+
+        // 1. GATHER ALL STATE DATA (Runs every tick for the player)
+        int[] countAndLevel = ArmorHelper.getArmorCountAndTotalLevel(player, RaidArmor.class);
+        int pieceCount = countAndLevel[0];
+        int totalLevel = countAndLevel[1];
+
+        boolean inRaid = RaidHelper.isEntityInRaid(player);
+        boolean hasOmen = player.hasEffect(Effects.BAD_OMEN);
+
+        // --- ATTRIBUTE LOGIC ---
+
+        CompoundNBT playerData = player.getPersistentData();
+        CompoundNBT modData = playerData.getCompound(NBT_TAG_ROOT);
+        long lastState = modData.getLong(NBT_TAG_LAST_STATE);
+
+        long currentState = (long) pieceCount
+                | ((long) totalLevel << 4)
+                | ((long) (inRaid ? 1 : 0) << 12)
+                | ((long) (hasOmen ? 1 : 0) << 13);
+
+        boolean stateChanged = currentState != lastState;
+
+        // The Event Handler Check: This runs even if pieceCount is 0.
+        if (stateChanged) {
+
+            TechniRaiders.LOGGER.info("Raid Armor State Changed (P:{}, L:{}, R:{}, O:{}) - Attribute Recalculation Triggered by PlayerTickEvent", pieceCount, totalLevel, inRaid, hasOmen);
+
+            // A. REMOVE ALL ATTRIBUTES
+            // This is critical. If pieceCount went from 1 to 0, this is where the attributes are removed.
+            RaidArmor.removeAllAttributes(player); // Must be static or accessed via a helper
+
+            // B. Reapply attributes (only if there are pieces)
+            if (pieceCount > 0) {
+                RaidArmor.applyAllAttributes(player, pieceCount, totalLevel, RaidHelper.isEntityInRaid(player), player.hasEffect(Effects.BAD_OMEN));
+            }
+
+            // C. Update the last known state
+            modData.putLong(NBT_TAG_LAST_STATE, currentState);
+            playerData.put(NBT_TAG_ROOT, modData);
+        }
+    }
 
     @SubscribeEvent
     public static void onLivingUpdate(LivingEvent.LivingUpdateEvent event) {
@@ -42,7 +98,7 @@ public class RaidArmorEventHandler {
 
             int armorPieceCount = countAndTotalLevel[0];
             int totalLevel = countAndTotalLevel[1];
-            int armorLevel = totalLevel / armorPieceCount;
+            int armorLevel = totalLevel != 0 && armorPieceCount != 0 ? totalLevel / armorPieceCount : 0;
 
             if (RaidHelper.isEntityInRaid(creatureEntity))
                 armorLevel ++;
@@ -133,7 +189,7 @@ public class RaidArmorEventHandler {
 
         int victimArmorCount = victimCountAndTotalLevel[0];
         int victimTotalLevel = victimCountAndTotalLevel[1];
-        int victimArmorLevel = victimTotalLevel / victimArmorCount;
+        int victimArmorLevel = victimArmorCount != 0 && victimTotalLevel != 0 ? victimTotalLevel / victimArmorCount : 0;
 
         if (RaidHelper.isEntityInRaid(victim))
             victimArmorLevel ++;
