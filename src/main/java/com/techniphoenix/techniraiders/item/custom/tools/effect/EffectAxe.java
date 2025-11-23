@@ -28,8 +28,8 @@ public class EffectAxe extends AxeItem
     private final int baseDurabilityCost;
 
     /**
-     * Constructor for the AuraPickaxe.
-     * * @param tier The material tier of the pickaxe.
+     * Constructor for the EffectAxe.
+     * * @param tier The material tier of the axe.
      * @param attackDamage The base attack damage of the tool.
      * @param attackSpeed The attack speed modifier of the tool.
      * @param effectAmplifications A map where keys are the Effect and values are the amplification level (1 for Level I, 2 for Level II, etc.).

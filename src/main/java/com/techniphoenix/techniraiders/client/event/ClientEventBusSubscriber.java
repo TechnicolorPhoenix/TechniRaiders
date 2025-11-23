@@ -29,7 +29,7 @@ public class ClientEventBusSubscriber {
                     // Use the getColor method from DyeableArmorItem
                     return ((RaidArmor) stack.getItem()).getColor(stack);
                 }
-                return 0x78563A; // Default color (white) for the overlay layer
+                return 0x78563A; // Default color (brown) for the overlay layer
             };
             IItemColor whiteColorHandler = (stack, tintIndex) -> {
                 // tintIndex 0 is the colored layer (layer0 in your model)
@@ -40,6 +40,15 @@ public class ClientEventBusSubscriber {
                 }
                 return 0xFFFFFF; // Default color (white) for the overlay layer
             };
+            IItemColor emeraldColorHandler = (stack, tintIndex) -> {
+                // tintIndex 0 is the colored layer (layer0 in your model)
+                // tintIndex 1 is the uncolored layer (layer1 in your model, the overlay)
+                if (tintIndex == 0) {
+                    // Use the getColor method from DyeableArmorItem
+                    return ((RaidArmor) stack.getItem()).getColor(stack);
+                }
+                return 0x8CE480; // Default color (emerald) for the overlay layer
+            };
 
             // Register the color handler for ALL your RaidArmor pieces
             // You will need to replace `YourModItems.RAID_HELMET.get()` with your actual item registry references.
@@ -48,14 +57,14 @@ public class ClientEventBusSubscriber {
                     RaidArmorItems.RAID_LEATHER_ARMOR_CHESTPLATE.get(),
                     RaidArmorItems.RAID_LEATHER_ARMOR_LEGGINGS.get(),
                     RaidArmorItems.RAID_LEATHER_ARMOR_BOOTS.get()
-            );
+                    );
             itemColors.register(whiteColorHandler,
-
                     RaidArmorItems.RAID_IRON_ARMOR_HELMET.get(),
                     RaidArmorItems.RAID_IRON_ARMOR_CHESTPLATE.get(),
                     RaidArmorItems.RAID_IRON_ARMOR_LEGGINGS.get(),
-                    RaidArmorItems.RAID_IRON_ARMOR_BOOTS.get(),
-
+                    RaidArmorItems.RAID_IRON_ARMOR_BOOTS.get()
+                    );
+            itemColors.register(emeraldColorHandler,
                     RaidArmorItems.RAID_EMERALD_ARMOR_HELMET.get(),
                     RaidArmorItems.RAID_EMERALD_ARMOR_CHESTPLATE.get(),
                     RaidArmorItems.RAID_EMERALD_ARMOR_LEGGINGS.get(),

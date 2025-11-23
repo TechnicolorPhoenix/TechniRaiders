@@ -19,17 +19,17 @@ import java.util.Map;
 public class EffectSword extends SwordItem
 {
     // A map to store which Effect applies and what its amplification level should be.
-    private final Map<Effect, Integer> effectMap;
-
-    // The duration (in ticks) for which the effects will last.
-    private final int effectDuration;
+    protected Map<Effect, Integer> effectMap;
 
     // The durability cost incurred each time the aura is activated.
     private final int baseDurabilityCost;
 
+    // The duration (in ticks) for which the effects will last.
+    protected int effectDuration;
+
     /**
-     * Constructor for the AuraPickaxe.
-     * * @param tier The material tier of the pickaxe.
+     * Constructor for the EffectSword.
+     * * @param tier The material tier of the sword.
      * @param attackDamage The base attack damage of the tool.
      * @param attackSpeed The attack speed modifier of the tool.
      * @param effectAmplifications A map where keys are the Effect and values are the amplification level (1 for Level I, 2 for Level II, etc.).
@@ -42,7 +42,6 @@ public class EffectSword extends SwordItem
                        int durabilityCost, Properties properties) {
 
         super(tier, attackDamage, attackSpeed, properties);
-        this.effectMap = effectAmplifications;
         this.effectDuration = effectDuration;
         this.baseDurabilityCost = durabilityCost;
     }
@@ -84,10 +83,10 @@ public class EffectSword extends SwordItem
                     SoundEvents.PLAYER_LEVELUP, SoundCategory.PLAYERS, 0.5F, 1.0F);
 
             // Since the action was successful and the item was used, return SUCCESS
-            return ActionResultType.sidedSuccess();
+            return ActionResult.pass(stack);
         }
 
-        return ActionResultType.sidedSuccess();
+        return super.use(world, player, hand);
     }
 
     // Note: The base hitEntity method from PickaxeItem will still apply

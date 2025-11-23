@@ -12,6 +12,7 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.monster.AbstractIllagerEntity;
+import net.minecraft.entity.monster.AbstractRaiderEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.nbt.CompoundNBT;
@@ -194,7 +195,7 @@ public class RaidArmorEventHandler {
         if (RaidHelper.isEntityInRaid(victim))
             victimArmorLevel ++;
 
-        if ((attacker instanceof AbstractIllagerEntity || attacker instanceof AgeableEntity) && victimArmorCount > 0) {
+        if ((attacker instanceof AbstractRaiderEntity || attacker instanceof AgeableEntity) && victimArmorCount > 0) {
 
             if (RaidHelper.isEntityInRaid(victim))
                 victimArmorCount ++;
