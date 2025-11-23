@@ -55,7 +55,7 @@ public class DamageScalingEventHandler {
                         // Optional: Send a chat message to the player
                         killer.displayClientMessage(
                                 new net.minecraft.util.text.StringTextComponent(
-                                        String.format("§aPillager Slayer damage increased to +%.1f!", newBonus)
+                                        String.format("§aWeapon damage increased to +%.1f!", newBonus)
                                 ),
                                 true
                         );
@@ -88,7 +88,7 @@ public class DamageScalingEventHandler {
                     // Optional: Send a chat message to the player
                     dyingPlayer.displayClientMessage(
                             new net.minecraft.util.text.StringTextComponent(
-                                    "§cYou died! Pillager Slayer damage bonus reset."
+                                    "§cYou died! Weapon damage bonus reset."
                             ),
                             false
                     );

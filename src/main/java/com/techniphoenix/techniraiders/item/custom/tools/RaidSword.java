@@ -28,46 +28,21 @@ public class RaidSword extends EffectSword {
     // NBT key to store the current damage bonus
     private static final String NBT_KEY_BONUS_DAMAGE = "PillagerSlayer_BonusDamage";
 
-    private final double initialDamageBonus;
+    private final double initialDamageBonus = 0;
+    private int weaponLevel = 0;
 
     private static final Random RANDOM = new Random();
 
-    private static List<Effect> damageBonus() {
-        // This is where the executable code (.put) is now correctly placed (inside a method).
-        List<Effect> bonuses = new ArrayList<>();
-        bonuses.add(Effects.HEALTH_BOOST);
-        bonuses.add(Effects.DAMAGE_BOOST);
-        return bonuses;
-    }
-    private static List<Effect> speedBonus() {
-        // This is where the executable code (.put) is now correctly placed (inside a method).
-        List<Effect> bonuses = new ArrayList<>();
-        bonuses.add(Effects.HEALTH_BOOST);
-        bonuses.add(Effects.DIG_SPEED);
-        return bonuses;
-    }
-    private static List<Effect> movementBonus() {
-        // This is where the executable code (.put) is now correctly placed (inside a method).
-        List<Effect> bonuses = new ArrayList<>();
-        bonuses.add(Effects.HEALTH_BOOST);
-        bonuses.add(Effects.MOVEMENT_SPEED);
-        return bonuses;
-    }
-    private static List<Effect> regenerationBonus() {
-        // This is where the executable code (.put) is now correctly placed (inside a method).
-        List<Effect> bonuses = new ArrayList<>();
-        bonuses.add(Effects.HEALTH_BOOST);
-        bonuses.add(Effects.REGENERATION);
-        return bonuses;
-    }
-    private static List<Effect> resistanceBonus() {
-        // This is where the executable code (.put) is now correctly placed (inside a method).
-        List<Effect> bonuses = new ArrayList<>();
-        bonuses.add(Effects.HEALTH_BOOST);
-        bonuses.add(Effects.DAMAGE_RESISTANCE);
-        return bonuses;
+    private static List<Effect> createEffectList() {
+        List<Effect> effects = new ArrayList<>();
+        effects.add(Effects.DAMAGE_RESISTANCE);
+        effects.add(Effects.DAMAGE_BOOST);
+        effects.add(Effects.DIG_SPEED);
+        effects.add(Effects.MOVEMENT_SPEED);
+        return effects;
     }
 
+    private static final List<Effect> effects = createEffectList();
 
     /**
      * Constructor for the EffectSword.
@@ -76,11 +51,12 @@ public class RaidSword extends EffectSword {
      * @param tier
      * @param attackDamage         The base attack damage of the tool.
      * @param attackSpeed          The attack speed modifier of the tool.
+     * @param weaponLevel          The level of the weapon.
      * @param properties           Item properties.
      */
-    public RaidSword(IItemTier tier, int attackDamage, float attackSpeed, Properties properties) {
+    public RaidSword(IItemTier tier, int attackDamage, float attackSpeed, int weaponLevel, Properties properties) {
         super(tier, attackDamage, attackSpeed, null, 200, 0, properties);
-        initialDamageBonus = attackDamage;
+        this.weaponLevel = weaponLevel;
     }
 
     /**
@@ -108,7 +84,7 @@ public class RaidSword extends EffectSword {
     @Override
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlotType equipmentSlot, ItemStack stack) {
         // Get the base map from the superclass (this includes the base ATTACK_DAMAGE and ATTACK_SPEED)
-        ImmutableMultimap.Builder<net.minecraft.entity.ai.attributes.Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
+        ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
         builder.putAll(super.getAttributeModifiers(equipmentSlot, stack));
 
         if (equipmentSlot == EquipmentSlotType.MAINHAND) {
@@ -130,27 +106,27 @@ public class RaidSword extends EffectSword {
     public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
         if (player.hasEffect(Effects.BAD_OMEN)) {
             EffectInstance badOmenEffect = player.getEffect(Effects.BAD_OMEN);
-            Effect pickedEffect;
 
             this.effectDuration = badOmenEffect.getDuration();
 
-            int randomFactor = RANDOM.nextInt(5) + 1; // Gives 1, 2, 3, 4, or 5
+            int randomFactor = RANDOM.nextInt(effects.size()) + 1;
+            Effect pickedEffect = effects.get(randomFactor);
 
-            switch (randomFactor) {
-                case 1:
+            if (pickedEffect == Effects.DAMAGE_BOOST) {
+                if (weaponLevel == 1) {
+                    pickedEffect = Effects.ABSORPTION;
+                } else {
 
-                case 2:
-                    pickedEffect = Effects.DAMAGE_RESISTANCE;
-                case 3:
-                    pickedEffect = Effects.REGENERATION;
-                case 4:
-                    pickedEffect = Effects.MOVEMENT_SPEED;
-                case 5:
-                    pickedEffect = Effects.DIG_SPEED;
+                }
             }
+            if (weaponLevel > 1) {
+                this.effectDuration *= 2;
+            }
+            this.effectMap = new HashMap<>();
+            this.effectMap.put(Effects.REGENERATION, weaponLevel);
+            this.effectMap.put(pickedEffect, Math.max(weaponLevel - 1, 0));
 
             player.removeEffect(Effects.BAD_OMEN);
-
 
             return super.use(world, player, hand);
         }

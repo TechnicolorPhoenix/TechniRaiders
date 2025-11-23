@@ -20,7 +20,15 @@ public class RaidWeaponItems {
             DeferredRegister.create(ForgeRegistries.ITEMS, TechniRaiders.MOD_ID);
 
     public static final RegistryObject<Item> RAID_SWORD_TIER_1 = ITEMS.register("raid_sword_1",
-            () -> new RaidSword(ItemTier.WOOD, 3, -2.4F,
+            () -> new RaidSword(ItemTier.WOOD, 3, -2.4F, 1,
+                    new Item.Properties().rarity(Rarity.UNCOMMON).tab(ModItemGroup.RAID_ARMOR_GROUP)));
+
+    public static final RegistryObject<Item> RAID_SWORD_TIER_2 = ITEMS.register("raid_sword_2",
+            () -> new RaidSword(ItemTier.STONE, 3, -2.4F, 2,
+                    new Item.Properties().rarity(Rarity.UNCOMMON).tab(ModItemGroup.RAID_ARMOR_GROUP)));
+
+    public static final RegistryObject<Item> RAID_SWORD_TIER_3 = ITEMS.register("raid_sword_3",
+            () -> new RaidSword(ItemTier.IRON, 4, -2.4F, 3,
                     new Item.Properties().rarity(Rarity.UNCOMMON).tab(ModItemGroup.RAID_ARMOR_GROUP)));
 
 }
