@@ -18,5 +18,9 @@
   "item.techniraiders.raid_sword_2": "Emerald Raiders Sword",
   "item.techniraiders.raid_sword_3": "Emerald Raiders Sword",
 
+  "item.techniraiders.raid_axe_1": "Emerald Raiders Axe",
+  "item.techniraiders.raid_axe_2": "§5Emerald Raiders Axe",
+  "item.techniraiders.raid_axe_3": "§6Emerald Raiders Axe",
+
   "itemGroup.raidArmorTab": "Raid Armors"
 }

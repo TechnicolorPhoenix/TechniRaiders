@@ -19,10 +19,10 @@ import java.util.Map;
 public class EffectAxe extends AxeItem
 {
     // A map to store which Effect applies and what its amplification level should be.
-    private final Map<Effect, Integer> effectMap;
+    protected Map<Effect, Integer> effectMap;
 
     // The duration (in ticks) for which the effects will last.
-    private final int effectDuration;
+    protected int effectDuration;
 
     // The durability cost incurred each time the aura is activated.
     private final int baseDurabilityCost;

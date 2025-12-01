@@ -2,6 +2,7 @@ package com.techniphoenix.techniraiders.item.tool;
 
 import com.techniphoenix.techniraiders.TechniRaiders;
 import com.techniphoenix.techniraiders.item.ModItemGroup;
+import com.techniphoenix.techniraiders.item.custom.tools.RaidAxe;
 import com.techniphoenix.techniraiders.item.custom.tools.RaidSword;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemTier;
@@ -22,13 +23,21 @@ public class RaidWeaponItems {
     public static final RegistryObject<Item> RAID_SWORD_TIER_1 = ITEMS.register("raid_sword_1",
             () -> new RaidSword(ItemTier.WOOD, 3, -2.4F, 1,
                     new Item.Properties().rarity(Rarity.UNCOMMON).tab(ModItemGroup.RAID_ARMOR_GROUP)));
-
     public static final RegistryObject<Item> RAID_SWORD_TIER_2 = ITEMS.register("raid_sword_2",
             () -> new RaidSword(ItemTier.STONE, 3, -2.4F, 2,
                     new Item.Properties().rarity(Rarity.UNCOMMON).tab(ModItemGroup.RAID_ARMOR_GROUP)));
-
     public static final RegistryObject<Item> RAID_SWORD_TIER_3 = ITEMS.register("raid_sword_3",
             () -> new RaidSword(ItemTier.IRON, 4, -2.4F, 3,
+                    new Item.Properties().rarity(Rarity.UNCOMMON).tab(ModItemGroup.RAID_ARMOR_GROUP)));
+
+    public static final RegistryObject<Item> RAID_AXE_TIER_1 = ITEMS.register("raid_axe_1",
+            () -> new RaidAxe(ItemTier.WOOD, 6, -3.0F, 1,
+                    new Item.Properties().rarity(Rarity.UNCOMMON).tab(ModItemGroup.RAID_ARMOR_GROUP)));
+    public static final RegistryObject<Item> RAID_AXE_TIER_2 = ITEMS.register("raid_axe_2",
+            () -> new RaidAxe(ItemTier.STONE, 6, -3.0F, 2,
+                    new Item.Properties().rarity(Rarity.UNCOMMON).tab(ModItemGroup.RAID_ARMOR_GROUP)));
+    public static final RegistryObject<Item> RAID_AXE_TIER_3 = ITEMS.register("raid_axe_3",
+            () -> new RaidAxe(ItemTier.IRON, 7, -3.0F, 3,
                     new Item.Properties().rarity(Rarity.UNCOMMON).tab(ModItemGroup.RAID_ARMOR_GROUP)));
 
 }

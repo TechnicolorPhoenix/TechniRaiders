@@ -45,8 +45,8 @@ public class RaidArmor extends DyeableLevelableArmor {
     private static final Map<Integer, BonusData> RAID_BONUSES = new HashMap<>();
     static {
         RAID_BONUSES.put(1, new BonusData(Attributes.ARMOR, null, new UUID(RAID_MODIFIERS_UUID.getMostSignificantBits(), RAID_MODIFIERS_UUID.getLeastSignificantBits() + 1)));
-        RAID_BONUSES.put(2, new BonusData(null, Effects.DAMAGE_RESISTANCE, null));
-        RAID_BONUSES.put(3, new BonusData(null, Effects.FIRE_RESISTANCE, null));
+        RAID_BONUSES.put(2, new BonusData(null, Effects.SATURATION, null));
+        RAID_BONUSES.put(3, new BonusData(null, Effects.DAMAGE_RESISTANCE, null));
         RAID_BONUSES.put(4, new BonusData(null, Effects.ABSORPTION, null));
     }
 
@@ -76,7 +76,7 @@ public class RaidArmor extends DyeableLevelableArmor {
         boolean hasOmen = player.hasEffect(Effects.BAD_OMEN);
 
         // EFFECT LOGIC (Always runs every 20 ticks if pieceCount > 0)
-        if (player.tickCount % 20 == 0 && pieceCount > 0) {
+        if (player.tickCount % 100 == 0 && pieceCount > 0) {
             for (int tier = 1; tier <= 4; tier++) {
                 if (tier <= pieceCount) {
                     applySingleEffectBonus(player, BASE_BONUSES.get(tier), averageLevel);
@@ -89,77 +89,6 @@ public class RaidArmor extends DyeableLevelableArmor {
                 }
             }
         }
-//        if (world.isClientSide) return;
-//
-//        // --- 1. GATHER ALL STATE DATA (MUST run even if pieceCount is 0) ---
-//        // The player's state must be calculated FIRST to determine if an update is needed.
-//        int[] countAndLevel = ArmorHelper.getArmorCountAndTotalLevel(player, RaidArmor.class);
-//        int pieceCount = countAndLevel[0];
-//        int totalLevel = countAndLevel[1];
-//        int averageLevel = pieceCount > 0 ? totalLevel / pieceCount : 0;
-//
-//        boolean inRaid = RaidHelper.isEntityInRaid(player);
-//        boolean hasOmen = player.hasEffect(Effects.BAD_OMEN);
-//
-//        // --- 2. ATTRIBUTE LOGIC (State-Gated for Efficiency and Cleanup) ---
-//        // This block handles the heavy lifting (Add/Remove Attribute Modifiers).
-//
-//        // Get the last known state from the player's NBT
-//        CompoundNBT playerData = player.getPersistentData();
-//        CompoundNBT modData = playerData.getCompound(NBT_TAG_ROOT);
-//        long lastState = modData.getLong(NBT_TAG_LAST_STATE);
-//
-//        // Combine the current state into a single unique long value (hash/flag)
-//        long currentState = (long) pieceCount
-//                | ((long) totalLevel << 4)
-//                | ((long) (inRaid ? 1 : 0) << 12)
-//                | ((long) (hasOmen ? 1 : 0) << 13);
-//
-//        boolean stateChanged = currentState != lastState;
-//
-//        // Check: Run if the state has changed (for add/remove/update) OR
-//        // if it's the very first time putting armor on (lastState == 0 and pieceCount > 0).
-//        if (stateChanged) {
-//
-//            TechniRaiders.LOGGER.info("Raid Armor State Changed (P:{}, L:{}, R:{}, O:{}) - Recalculating Attributes", pieceCount, totalLevel, inRaid, hasOmen);
-//
-//            removeAllAttributes(player);
-//
-//            // B. Then, reapply necessary attribute modifiers (only if there are pieces)
-//            if (pieceCount > 0) {
-//                for (int tier = 1; tier <= 4; tier++) {
-//                    if (tier <= pieceCount) {
-//                        applySingleAttributeBonus(player, BASE_BONUSES.get(tier), tier, totalLevel, averageLevel);
-//                    }
-//                    if (inRaid && tier <= pieceCount) {
-//                        applySingleAttributeBonus(player, RAID_BONUSES.get(tier), tier, totalLevel, averageLevel);
-//                    }
-//                    if (hasOmen && tier <= pieceCount) {
-//                        applySingleAttributeBonus(player, OMEN_BONUSES.get(tier), tier, totalLevel, averageLevel);
-//                    }
-//                }
-//            }
-//
-//            // C. Update the last known state
-//            modData.putLong(NBT_TAG_LAST_STATE, currentState);
-//            playerData.put(NBT_TAG_ROOT, modData);
-//        }
-//
-//        // --- 3. EFFECT LOGIC (Always runs every 20 ticks if pieceCount > 0) ---
-//        // Effects must be constantly reapplied, so they are tick-gated and separate.
-//        if (player.tickCount % 20 == 0 && pieceCount > 0) {
-//            for (int tier = 1; tier <= 4; tier++) {
-//                if (tier <= pieceCount) {
-//                    applySingleEffectBonus(player, BASE_BONUSES.get(tier), averageLevel);
-//                    if (inRaid) {
-//                        applySingleEffectBonus(player, RAID_BONUSES.get(tier), averageLevel);
-//                    }
-//                    if (hasOmen) {
-//                        applySingleEffectBonus(player, OMEN_BONUSES.get(tier), averageLevel);
-//                    }
-//                }
-//            }
-//        }
     }
 
     /**
@@ -234,7 +163,7 @@ public class RaidArmor extends DyeableLevelableArmor {
         if (bonus == null || bonus.effect == null) return;
 
         Effect effect = bonus.effect;
-        int duration = 25; // 1.25 seconds
+        int duration = 105; // 1.25 seconds
         int currentAmplifier = averageLevel;
 
         // Hard Caps (Regeneration, Nightvision, Invisibility should not go beyond amplifier 0)
