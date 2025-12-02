@@ -1,10 +1,9 @@
 package com.techniphoenix.techniraiders.item.custom.armor;
 
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
 import com.techniphoenix.techniraiders.TechniRaiders;
 import com.techniphoenix.techniraiders.helper.ArmorHelper;
 import com.techniphoenix.techniraiders.helper.RaidHelper;
+import com.techniphoenix.techniraiders.item.custom.interfaces.ILevelableItem;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -12,9 +11,9 @@ import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.DyeableArmorItem;
 import net.minecraft.item.IArmorMaterial;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
@@ -22,7 +21,7 @@ import net.minecraft.world.World;
 
 import java.util.*;
 
-public class RaidArmor extends DyeableLevelableArmor {
+public class RaidArmor extends DyeableArmorItem implements ILevelableItem {
 
     public static final float damageReductionPerPiece = 0.06f;
     public static final float damageReductionPerLevel = 0.02f;
@@ -59,8 +58,11 @@ public class RaidArmor extends DyeableLevelableArmor {
         OMEN_BONUSES.put(4, new BonusData(null, Effects.REGENERATION, null));
     }
 
+    private int armorLevel;
+
     public RaidArmor(IArmorMaterial materialIn, EquipmentSlotType slot, int armorLevel, Properties builder) {
-        super(materialIn, slot, builder, armorLevel);
+        super(materialIn, slot, builder);
+        this.armorLevel = armorLevel;
     }
 
     @Override
@@ -232,6 +234,11 @@ public class RaidArmor extends DyeableLevelableArmor {
                 }
             }
         }
+    }
+
+    @Override
+    public int getItemLevel() {
+        return armorLevel;
     }
 
     // Struct Class
