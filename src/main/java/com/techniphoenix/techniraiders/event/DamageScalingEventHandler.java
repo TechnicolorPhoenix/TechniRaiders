@@ -1,7 +1,7 @@
 package com.techniphoenix.techniraiders.event;
 
 import com.techniphoenix.techniraiders.TechniRaiders;
-import com.techniphoenix.techniraiders.item.custom.IDamageScaling;
+import com.techniphoenix.techniraiders.item.interfaces.IDamageScaling;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.monster.AbstractRaiderEntity;
 import net.minecraft.entity.player.PlayerEntity;

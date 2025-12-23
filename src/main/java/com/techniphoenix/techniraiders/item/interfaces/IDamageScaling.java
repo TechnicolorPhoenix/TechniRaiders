@@ -1,8 +1,6 @@
-package com.techniphoenix.techniraiders.item.custom;
+package com.techniphoenix.techniraiders.item.interfaces;
 
 import com.google.common.collect.Multimap;
-import com.techniphoenix.techniraiders.item.custom.tools.RaidAxe;
-import com.techniphoenix.techniraiders.item.custom.tools.RaidSword;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;

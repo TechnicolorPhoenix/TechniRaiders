@@ -15,15 +15,15 @@ import java.util.function.Supplier;
 
 public enum ModArmorMaterial implements IArmorMaterial {
     RAID_LEATHER("raid_leather", 7, new int[]{1, 2, 3, 1}, 14,
-            SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, () -> {
+            SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, 1, () -> {
         return Ingredient.of(Items.LEATHER);
     }),
     RAID_IRON("raid_iron", 15, new int[]{1, 4, 5, 2}, 13,
-            SoundEvents.ARMOR_EQUIP_IRON, 0.33F, 0.0F, () -> {
+            SoundEvents.ARMOR_EQUIP_IRON, 0.33F, 0.0F, 1, () -> {
         return Ingredient.of(Items.IRON_INGOT);
     }),
     RAID_EMERALD("raid_emerald", 26, new int[]{2, 5, 6, 2}, 11,
-            SoundEvents.ARMOR_EQUIP_TURTLE, 1.0F, 0.0F, () -> {
+            SoundEvents.ARMOR_EQUIP_TURTLE, 1.0F, 0.0F, 1, () -> {
         return Ingredient.of(Items.EMERALD_ORE);
     }),
     ;
@@ -37,11 +37,10 @@ public enum ModArmorMaterial implements IArmorMaterial {
     private final SoundEvent soundEvent;
     private final float toughness;
     private final float knockbackResistance;
-    private final float jumpHeight;
-    private final int healthBonus;
+    private final int armorLevel;
     private final LazyValue<Ingredient> repairMaterial;
 
-    private ModArmorMaterial(String name, int maxDamageFactor, int[] damageReductionAmountArray, int enchantability, SoundEvent soundEvent, float toughness, float knockbackResistance, Supplier<Ingredient> repairMaterial) {
+    private ModArmorMaterial(String name, int maxDamageFactor, int[] damageReductionAmountArray, int enchantability, SoundEvent soundEvent, float toughness, float knockbackResistance, int armorLevel, Supplier<Ingredient> repairMaterial) {
         this.name = name;
         this.maxDamageFactor = maxDamageFactor;
         this.damageReductionAmountArray = damageReductionAmountArray;
@@ -49,35 +48,8 @@ public enum ModArmorMaterial implements IArmorMaterial {
         this.soundEvent = soundEvent;
         this.toughness = toughness;
         this.knockbackResistance = knockbackResistance;
-        this.jumpHeight = 0f;
-        this.healthBonus = 0;
         this.repairMaterial = new LazyValue<>(repairMaterial);
-    }
-
-    private ModArmorMaterial(String name, int maxDamageFactor, int[] damageReductionAmountArray, int enchantability, SoundEvent soundEvent, float toughness, float knockbackResistance, float jumpHeight, int healthBonus, Supplier<Ingredient> repairMaterial) {
-        this.name = name;
-        this.maxDamageFactor = maxDamageFactor;
-        this.damageReductionAmountArray = damageReductionAmountArray;
-        this.enchantability = enchantability;
-        this.soundEvent = soundEvent;
-        this.toughness = toughness;
-        this.knockbackResistance = knockbackResistance;
-        this.jumpHeight = jumpHeight;
-        this.healthBonus = healthBonus;
-        this.repairMaterial = new LazyValue<>(repairMaterial);
-    }
-
-    private ModArmorMaterial(String name, int maxDamageFactor, int[] damageReductionAmountArray, int enchantability, SoundEvent soundEvent, float toughness, float knockbackResistance, float jumpHeight, Supplier<Ingredient> repairMaterial) {
-        this.name = name;
-        this.maxDamageFactor = maxDamageFactor;
-        this.damageReductionAmountArray = damageReductionAmountArray;
-        this.enchantability = enchantability;
-        this.soundEvent = soundEvent;
-        this.toughness = toughness;
-        this.knockbackResistance = knockbackResistance;
-        this.jumpHeight = jumpHeight;
-        this.healthBonus = 0;
-        this.repairMaterial = new LazyValue<>(repairMaterial);
+        this.armorLevel = armorLevel;
     }
 
     @Override
@@ -117,4 +89,5 @@ public enum ModArmorMaterial implements IArmorMaterial {
     public float getKnockbackResistance() {
         return this.knockbackResistance;
     }
+    public int getItemLevel() { return this.armorLevel; }
 }

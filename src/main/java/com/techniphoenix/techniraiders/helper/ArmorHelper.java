@@ -1,6 +1,6 @@
 package com.techniphoenix.techniraiders.helper;
 
-import com.techniphoenix.techniraiders.item.custom.interfaces.ILevelableItem;
+import com.techniphoenix.techniraiders.item.interfaces.ILevelableItem;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ArmorItem;

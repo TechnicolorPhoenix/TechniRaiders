@@ -3,7 +3,7 @@ package com.techniphoenix.techniraiders.item.custom.armor;
 import com.techniphoenix.techniraiders.TechniRaiders;
 import com.techniphoenix.techniraiders.helper.ArmorHelper;
 import com.techniphoenix.techniraiders.helper.RaidHelper;
-import com.techniphoenix.techniraiders.item.custom.interfaces.ILevelableItem;
+import com.techniphoenix.techniraiders.item.interfaces.ILevelableItem;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
